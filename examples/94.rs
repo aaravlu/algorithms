@@ -59,47 +59,6 @@ pub struct TreeNode {
     pub right: Option<Rc<RefCell<TreeNode>>>, // 右子节点
 }
 
-// 二叉树中序遍历函数
-// 中序遍历顺序：左子树 -> 根节点 -> 右子树
-pub fn _inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    // 创建一个空向量来存储遍历结果
-    let mut result = Vec::new();
-
-    // 创建一个栈来辅助遍历（模拟递归的调用栈）
-    let mut stack = Vec::new();
-
-    // current指向当前正在处理的节点，初始化为根节点
-    let mut current = root;
-
-    // 主循环：当还有节点需要处理或栈不为空时继续
-    // current.is_some(): 还有当前节点需要处理
-    // !stack.is_empty(): 栈中还有待处理的节点
-    while current.is_some() || !stack.is_empty() {
-        // 内层循环：一直向左走，把所有左子节点压入栈中
-        // 这模拟了递归遍历左子树的过程
-        while let Some(node) = current {
-            // 将当前节点压入栈中（保存起来，稍后处理）
-            stack.push(node.clone());
-
-            // 移动到左子节点，继续向左深入
-            current = node.borrow().left.clone();
-        }
-
-        // 当不能再向左走时，从栈中弹出节点进行处理
-        if let Some(node) = stack.pop() {
-            // 访问当前节点（中序遍历的核心：在访问完左子树后访问根节点）
-            // 将当前节点的值添加到结果列表中
-            result.push(node.borrow().val);
-
-            // 处理完当前节点后，转向右子树
-            // 将current设置为右子节点，下一轮循环会处理右子树
-            current = node.borrow().right.clone();
-        }
-    }
-
-    // 返回中序遍历的结果
-    result
-}
 pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     let mut current = root;
     let mut ret = Vec::new();
@@ -119,17 +78,15 @@ pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     ret
 }
 
-// 算法思路解析：
-// 1. 中序遍历的顺序是：左子树 -> 根节点 -> 右子树
-// 2. 使用栈来模拟递归调用的过程
-// 3. 核心思想：
-//    - 先一直向左走，把所有左子节点压入栈中
-//    - 当不能再向左时，弹出栈顶节点（这是最左边的节点）
-//    - 访问该节点（添加到结果中）
-//    - 然后转向该节点的右子树，重复上述过程
-//
-// 示例（二叉树：1 -> 2,3; 2 -> 4,5）：
-// 遍历顺序：4 -> 2 -> 5 -> 1 -> 3
-//
-// 时间复杂度：O(n)，每个节点被访问一次
-// 空间复杂度：O(h)，h是树的高度，最坏情况下是O(n)
+pub fn _inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+    fn recursive(node: Option<Rc<RefCell<TreeNode>>>, ret: &mut Vec<i32>) {
+        if let Some(node) = node {
+            recursive(node.borrow().left.clone(), ret);
+            ret.push(node.borrow().val);
+            recursive(node.borrow().right.clone(), ret);
+        }
+    }
+    let mut ret = Vec::new();
+    recursive(root, &mut ret);
+    ret
+}
