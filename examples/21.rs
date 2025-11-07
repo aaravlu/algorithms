@@ -11,9 +11,17 @@ impl ListNode {
     fn new(val: i32) -> Self {
         ListNode { next: None, val }
     }
+
+    #[inline]
+    fn from_node(val: i32, next: Box<ListNode>) -> Self {
+        ListNode {
+            val,
+            next: Some(next),
+        }
+    }
 }
 
-pub fn merge_two_lists(
+pub fn _merge_two_lists(
     list1: Option<Box<ListNode>>,
     list2: Option<Box<ListNode>>,
 ) -> Option<Box<ListNode>> {
@@ -45,6 +53,46 @@ pub fn merge_two_lists(
     }
 
     dummy.next
+}
+
+pub fn merge_two_lists(
+    list1: Option<Box<ListNode>>,
+    list2: Option<Box<ListNode>>,
+) -> Option<Box<ListNode>> {
+    match (list1, list2) {
+        (None, None) => None,
+        (Some(node1), None) => Some(node1),
+        (None, Some(node2)) => Some(node2),
+        (Some(node1), Some(node2)) => {
+            let mut ret = node1.clone();
+            fn recurse(
+                node1: Box<ListNode>,
+                node2: Box<ListNode>,
+                ret: &mut Box<ListNode>,
+                mut stack: Vec<i32>,
+            ) {
+                if node2.val <= node1.val {
+                    *ret = Box::new(ListNode::from_node(node2.val, ret.clone()));
+                    for val in stack.iter() {
+                        *ret = Box::new(ListNode::from_node(*val, ret.clone()));
+                    }
+                    stack.clear();
+
+                    if node2.next.is_some() {
+                        recurse(node1, node2.next.unwrap(), ret, stack);
+                    }
+                } else {
+                    if node1.next.is_some() {
+                        stack.push(node1.val);
+                        recurse(node1.next.unwrap(), node2, ret, stack);
+                    }
+                }
+            }
+
+            recurse(node1, node2, &mut ret, Vec::with_capacity(0));
+            Some(ret)
+        }
+    }
 }
 
 #[cfg(test)]

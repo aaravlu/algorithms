@@ -1,39 +1,5 @@
 use std::{cell::RefCell, rc::Rc};
 
-fn main() {
-    // 测试反转二叉树
-    let root = Some(Rc::new(RefCell::new(TreeNode {
-        val: 4,
-        left: Some(Rc::new(RefCell::new(TreeNode {
-            val: 2,
-            left: Some(Rc::new(RefCell::new(TreeNode::new(1)))),
-            right: Some(Rc::new(RefCell::new(TreeNode::new(3)))),
-        }))),
-        right: Some(Rc::new(RefCell::new(TreeNode {
-            val: 7,
-            left: Some(Rc::new(RefCell::new(TreeNode::new(6)))),
-            right: Some(Rc::new(RefCell::new(TreeNode::new(9)))),
-        }))),
-    })));
-
-    println!("原始树:");
-    print_tree(&root, 0);
-
-    let inverted = invert_tree(root);
-
-    println!("\n反转后的树:");
-    print_tree(&inverted, 0);
-}
-
-fn print_tree(node: &Option<Rc<RefCell<TreeNode>>>, depth: usize) {
-    if let Some(n) = node {
-        let node_ref = n.borrow();
-        println!("{}{}", "  ".repeat(depth), node_ref.val);
-        print_tree(&node_ref.left, depth + 1);
-        print_tree(&node_ref.right, depth + 1);
-    }
-}
-
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
     pub val: i32,
@@ -51,6 +17,8 @@ impl TreeNode {
         }
     }
 }
+
+fn main() {}
 
 pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     if let Some(node) = root {
@@ -70,4 +38,26 @@ pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<Tre
     } else {
         None
     }
+}
+pub fn _invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    fn recurse(node: Option<Rc<RefCell<TreeNode>>>) {
+        if let Some(node) = node {
+            let mut node_borrow_mut = node.borrow_mut();
+
+            let left = node_borrow_mut.left.take();
+            let right = node_borrow_mut.right.take();
+
+            node_borrow_mut.left = right;
+            node_borrow_mut.right = left;
+
+            drop(node_borrow_mut);
+
+            recurse(node.borrow().left.clone());
+            recurse(node.borrow().right.clone());
+        }
+    }
+
+    recurse(root.clone());
+
+    root
 }
