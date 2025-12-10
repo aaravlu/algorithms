@@ -1,34 +1,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-fn main() {
-    // 测试用例1: 两个简单的树
-    let tree1 = Some(Rc::new(RefCell::new(TreeNode {
-        val: 1,
-        left: Some(Rc::new(RefCell::new(TreeNode::new(3)))),
-        right: Some(Rc::new(RefCell::new(TreeNode::new(2)))),
-    })));
-
-    let tree2 = Some(Rc::new(RefCell::new(TreeNode {
-        val: 2,
-        left: Some(Rc::new(RefCell::new(TreeNode::new(1)))),
-        right: Some(Rc::new(RefCell::new(TreeNode::new(3)))),
-    })));
-
-    let merged = merge_trees(tree1, tree2);
-    println!("测试用例1 - 合并结果: {:?}", merged);
-
-    // 测试用例2: 一个树为空
-    let tree3 = Some(Rc::new(RefCell::new(TreeNode::new(5))));
-    let tree4 = None;
-
-    let merged2 = merge_trees(tree3, tree4);
-    println!("测试用例2 - 一个树为空: {:?}", merged2);
-
-    // 测试用例3: 两个树都为空
-    let merged3 = merge_trees(None, None);
-    println!("测试用例3 - 两个树都为空: {:?}", merged3);
-}
+fn main() {}
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
