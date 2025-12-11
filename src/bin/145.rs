@@ -176,17 +176,3 @@ pub fn postorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
 
     ret // 返回后序遍历结果
 }
-
-pub fn _postorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    fn postorder_recursive(node: Option<Rc<RefCell<TreeNode>>>, result: &mut Vec<i32>) {
-        if let Some(n) = node {
-            let node_ref = n.borrow();
-            postorder_recursive(node_ref.left.clone(), result);
-            postorder_recursive(node_ref.right.clone(), result);
-            result.push(node_ref.val);
-        }
-    }
-    let mut result = Vec::new();
-    postorder_recursive(root, &mut result);
-    result
-}
