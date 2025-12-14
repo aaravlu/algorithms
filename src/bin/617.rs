@@ -25,31 +25,31 @@ pub fn merge_trees(
     root1: Option<Rc<RefCell<TreeNode>>>,
     root2: Option<Rc<RefCell<TreeNode>>>,
 ) -> Option<Rc<RefCell<TreeNode>>> {
-    fn recursive(
-        root1: Option<Rc<RefCell<TreeNode>>>,
-        root2: Option<Rc<RefCell<TreeNode>>>,
+    fn recurse(
+        node1: Option<Rc<RefCell<TreeNode>>>,
+        node2: Option<Rc<RefCell<TreeNode>>>,
     ) -> Option<Rc<RefCell<TreeNode>>> {
-        match (root1, root2) {
-            (None, None) => None,
-            (Some(node1), None) => Some(node1),
-            (None, Some(node2)) => Some(node2),
+        match (node1, node2) {
+            (Some(node), None) | (None, Some(node)) => Some(node),
             (Some(node1), Some(node2)) => {
-                let mut node1_ref = node1.borrow_mut();
-                let mut node2_ref = node2.borrow_mut();
+                let node1_borrow = node1.borrow();
+                let node2_borrow = node2.borrow();
 
-                let merged_node =
-                    Rc::new(RefCell::new(TreeNode::new(node1_ref.val + node2_ref.val)));
+                let node1_val = node1_borrow.val;
+                let node2_val = node2_borrow.val;
 
-                merged_node.borrow_mut().left =
-                    recursive(node1_ref.left.take(), node2_ref.left.take());
+                let left = recurse(node1_borrow.left.clone(), node2_borrow.left.clone());
+                let right = recurse(node1_borrow.right.clone(), node2_borrow.right.clone());
 
-                merged_node.borrow_mut().right =
-                    recursive(node1_ref.right.take(), node2_ref.right.take());
-
-                Some(merged_node)
+                Some(Rc::new(RefCell::new(TreeNode {
+                    val: node1_val + node2_val,
+                    left,
+                    right,
+                })))
             }
+            (None, None) => None,
         }
     }
 
-    recursive(root1, root2)
+    recurse(root1, root2)
 }
