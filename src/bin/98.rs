@@ -19,6 +19,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub fn is_valid_bst(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    // DFS
     fn recurse(node: Option<Rc<RefCell<TreeNode>>>, min: Option<i32>, max: Option<i32>) -> bool {
         if let Some(node) = node {
             let node_borrow = node.borrow();
