@@ -20,6 +20,7 @@ impl TreeNode {
 
 fn main() {}
 
+// build new one
 pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     fn recurse(node: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
         if let Some(node) = node {
@@ -40,4 +41,25 @@ pub fn invert_tree(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<Tre
     }
 
     recurse(root)
+}
+
+// modify locally
+pub fn invert_tree2(root: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
+    fn recurse(node: Option<Rc<RefCell<TreeNode>>>) {
+        if let Some(node) = node {
+            let mut node_borrow = node.borrow_mut();
+
+            let left = node_borrow.left.take();
+            let right = node_borrow.right.take();
+
+            node_borrow.left = right;
+            node_borrow.right = left;
+
+            recurse(node_borrow.left.clone());
+            recurse(node_borrow.right.clone());
+        }
+    }
+
+    recurse(root.clone());
+    root
 }

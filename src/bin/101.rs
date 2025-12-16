@@ -40,4 +40,24 @@ pub fn is_symmetric(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     recurse(node_borrow.left.clone(), node_borrow.right.clone())
 }
 
+pub fn _is_symmetric(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
+    fn recurse(left: Option<Rc<RefCell<TreeNode>>>, right: Option<Rc<RefCell<TreeNode>>>) -> bool {
+        match (left, right) {
+            (Some(_), None) | (None, Some(_)) => false,
+            (None, None) => true,
+            (Some(left), Some(right)) => {
+                let left_borrow = left.borrow();
+                let right_borrow = right.borrow();
+                left_borrow.val == right_borrow.val
+                    && recurse(left_borrow.left.clone(), right_borrow.right.clone())
+                    && recurse(left_borrow.right.clone(), right_borrow.left.clone())
+            }
+        }
+    }
+
+    let root = root.unwrap();
+    let (left, right) = (root.borrow().left.clone(), root.borrow().right.clone());
+    recurse(left, right)
+}
+
 fn main() {}

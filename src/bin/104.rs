@@ -20,18 +20,18 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    let max_depth = 0;
-    fn recurse(node: Option<Rc<RefCell<TreeNode>>>, mut max_depth: i32) -> i32 {
+    fn recurse(node: Option<Rc<RefCell<TreeNode>>>) -> i32 {
         if let Some(node) = node {
-            max_depth += 1;
-            let left = recurse(node.borrow().left.clone(), max_depth);
-            let right = recurse(node.borrow().right.clone(), max_depth);
-            max_depth = left.max(right);
+            let node = node.borrow();
+            let left = recurse(node.left.clone());
+            let right = recurse(node.right.clone());
+            left.max(right) + 1
+        } else {
+            0
         }
-        max_depth
     }
 
-    recurse(root, max_depth)
+    recurse(root)
 }
 
 fn main() {}

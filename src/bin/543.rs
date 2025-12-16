@@ -18,23 +18,25 @@ impl TreeNode {
 
 use std::cell::RefCell;
 use std::rc::Rc;
-pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    let mut diameter = 0;
 
-    fn recurse(node: Option<Rc<RefCell<TreeNode>>>, diameter: &mut i32) -> i32 {
+pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    fn recurse(node: Option<Rc<RefCell<TreeNode>>>) -> (i32, i32) {
         if let Some(node) = node {
             let node_borrow = node.borrow();
-            let left = recurse(node_borrow.left.clone(), diameter);
-            let right = recurse(node_borrow.right.clone(), diameter);
-            *diameter = core::cmp::max(*diameter, left + right);
-            core::cmp::max(left, right) + 1
+            let (left_height, left_diameter) = recurse(node_borrow.left.clone());
+            let (right_height, right_diameter) = recurse(node_borrow.right.clone());
+
+            let height = left_height.max(right_height) + 1;
+            let diameter = left_diameter
+                .max(right_diameter)
+                .max(left_height + right_height);
+            (height, diameter)
         } else {
-            0
+            (0, 0)
         }
     }
 
-    recurse(root, &mut diameter);
-    diameter
+    recurse(root).1
 }
 
 fn main() {}
