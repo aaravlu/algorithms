@@ -1,4 +1,3 @@
-// Definition for a binary tree node.
 #[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
     pub val: i32,
@@ -35,7 +34,7 @@ pub fn rob(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     rob.max(not_rob)
 }
 pub fn _rob(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
-    // dfs
+    // DFS
     fn recurse(node: Option<Rc<RefCell<TreeNode>>>) -> (i32, i32) {
         if let Some(node) = node {
             let node_borrow = node.borrow();

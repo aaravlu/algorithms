@@ -46,3 +46,93 @@ pub fn merge_two_lists(
 
     dummy.next
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_merge_two_lists_both_empty() {
+        assert_eq!(merge_two_lists(None, None), None);
+    }
+
+    #[test]
+    fn test_merge_two_lists_one_empty() {
+        let list1 = Some(Box::new(ListNode::new(1)));
+        assert_eq!(
+            merge_two_lists(list1, None),
+            Some(Box::new(ListNode::new(1)))
+        );
+    }
+
+    #[test]
+    fn test_merge_two_lists_basic() {
+        let list1 = Some(Box::new(ListNode {
+            val: 1,
+            next: Some(Box::new(ListNode::new(2))),
+        }));
+        let list2 = Some(Box::new(ListNode {
+            val: 1,
+            next: Some(Box::new(ListNode::new(3))),
+        }));
+        let result = merge_two_lists(list1, list2);
+        // Expected: 1 -> 1 -> 2 -> 3
+        assert_eq!(result.as_ref().unwrap().val, 1);
+        assert_eq!(result.as_ref().unwrap().next.as_ref().unwrap().val, 1);
+        assert_eq!(
+            result
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .val,
+            2
+        );
+        assert_eq!(
+            result
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .val,
+            3
+        );
+    }
+
+    #[test]
+    fn test_merge_two_lists_different_lengths() {
+        let list1 = Some(Box::new(ListNode::new(1)));
+        let list2 = Some(Box::new(ListNode {
+            val: 2,
+            next: Some(Box::new(ListNode::new(3))),
+        }));
+        let result = merge_two_lists(list1, list2);
+        // Expected: 1 -> 2 -> 3
+        assert_eq!(result.as_ref().unwrap().val, 1);
+        assert_eq!(result.as_ref().unwrap().next.as_ref().unwrap().val, 2);
+        assert_eq!(
+            result
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .next
+                .as_ref()
+                .unwrap()
+                .val,
+            3
+        );
+    }
+}
