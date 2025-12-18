@@ -22,16 +22,14 @@ use std::rc::Rc;
 pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     let mut ret = Vec::new();
 
-    if let Some(root) = root {
+    if let Some(node) = root {
         let mut queue = VecDeque::new();
-        queue.push_back(root);
+        queue.push_back(node);
 
         while !queue.is_empty() {
-            let level_size = queue.len();
-            for i in 0..level_size {
-                let node = queue.pop_front().unwrap();
-                let node_borrow = node.borrow();
-
+            for i in 0..queue.len() {
+                let level_node = queue.pop_front().unwrap();
+                let level_node_borrow = level_node.borrow();
                 // if i == level_size - 1 {
                 //     ret.push(node_borrow.val);
                 // }
@@ -43,13 +41,13 @@ pub fn right_side_view(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
                 // }
 
                 if i == 0 {
-                    ret.push(node_borrow.val);
+                    ret.push(level_node_borrow.val);
                 }
-                if let Some(left) = node_borrow.right.clone() {
-                    queue.push_back(left);
-                }
-                if let Some(right) = node_borrow.left.clone() {
+                if let Some(right) = level_node_borrow.right.clone() {
                     queue.push_back(right);
+                }
+                if let Some(left) = level_node_borrow.left.clone() {
+                    queue.push_back(left);
                 }
             }
         }
