@@ -41,26 +41,21 @@ pub fn build_tree(preorder: Vec<i32>, inorder: Vec<i32>) -> Option<Rc<RefCell<Tr
 
         let left_size = root_index - in_start_index;
 
-        // pre_start_index == pre_start_index + 1
-        // pre_end_index == pre_start_index + left_size
-        // in_end_index == root_index - 1
         let left = recurse(
             preorder,
             pre_start_index + 1,
             pre_start_index + left_size,
             inorder,
             in_start_index,
-            root_index - 1,
+            in_start_index + left_size - 1,
         );
 
-        // pre_start_index == pre_start_index + left_size + 1
-        // in_start_index == root_index + 1
         let right = recurse(
             preorder,
             pre_start_index + left_size + 1,
             pre_end_index,
             inorder,
-            root_index + 1,
+            left_size + in_start_index + 1,
             in_end_index,
         );
 
